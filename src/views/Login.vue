@@ -7,47 +7,67 @@
       <span class="iconfont iconnew"></span>
     </div>
     <div class="form">
-      <div class="form-user">
+      <!-- <div class="form-user">
         <input type="text" v-model="form.username" placeholder="用户名/手机号" />
         <input type="password" v-model="form.password" placeholder="密码" />
       </div>
       <div class="form-btn">
         <button @click="handleClick">登录</button>
-      </div>
+      </div>-->
+      <van-form @submit="onSubmit" class="form">
+        <van-field
+          v-model="form.username"
+          name="用户名/手机号"
+          placeholder="用户名/手机号"
+          :rules="[{ required: true, message: '请填写用户名/手机号' }]"
+        />
+        <van-field
+          v-model="form.password"
+          type="password"
+          name="密码"
+          placeholder="密码"
+          :rules="[{ required: true, message: '请填写密码' }]"
+        />
+        <div style="margin: 16px;">
+          <van-button round block type="info" native-type="submit">登录</van-button>
+        </div>
+      </van-form>
+      <router-link to="/register">
+          <van-button round block class="link-register" >注册</van-button>
+      </router-link>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  data(){
+  data() {
     return {
       form: {
         username: "",
         password: ""
       }
-    }
+    };
   },
   methods: {
-    handleClick(){
+    onSubmit(values) {
       this.$axios({
         url: "http://127.0.0.1:3000/login",
         method: "POST",
         data: this.form
-
-      }).then(res=>{
-        const {message} = res.data;
-        this.$toast.success(message)
-      })
+      }).then(res => {
+        const { message } = res.data;
+        this.$toast.success(message);
+      });
     }
   }
 };
 </script>
 
 <style lang='less'>
-.container{
+.container {
   padding: 20 / 360 * 100vw;
-  .btn span{
+  .btn span {
     font-size: 27 / 360 * 100vw;
     line-height: 1;
   }
@@ -55,30 +75,31 @@ export default {
     text-align: center;
     margin-top: 20 /360 * 100vw;
   }
-  .logo span{
-    font-size: 126 / 360 *100vw;
+  .logo span {
+    font-size: 126 / 360 * 100vw;
     color: #d81e06;
   }
-  .form-user input {
-    width: 100%;
-    height: 40 / 360 *100vw;
-    line-height: 40 / 360 *100vw;
-    outline: none;
-    border: none;
-    font-size: 18px;
-    margin-top: 20 /360 * 100vw;
-    border-bottom: 1px #999 solid;
-  }
-  .form-btn button{
-    width: 100%;
-    height: 48 /360 *100vw;
-    margin-top: 50 / 360 *100vw;
-    outline: none;
+
+  
+  .form {
+    .van-cell{
+      padding: 10px 0;
+      font-size: 16px;
+      margin-bottom: 20/360*100vw;
+    }
+    .van-cell:not(:last-child)::after{
+      left: 0;
+      border-bottom: 1px solid #333;
+    }
+    .van-button--info{
+    margin-top: 50/360*100vw;
     background: #d81e06;
-    color: #fff;
-    font-size: 18px;
-    border-radius: 25px;
-    border: none;
+    border: 1px solid #cc3300;
+    }
+  }
+  .link-register{
+    margin-top: 20/360*100vw;
+  border: none;
   }
 }
 </style>

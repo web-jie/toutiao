@@ -7,6 +7,7 @@
 
 <style lang="less">
 @import url("//at.alicdn.com/t/font_1426139_jm7n2373nlh.css");
+@import url("../../node_modules/vant/lib/index.css");
 
  *{
    margin: 0;
