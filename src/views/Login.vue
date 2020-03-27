@@ -52,7 +52,7 @@ export default {
   methods: {
     onSubmit(values) {
       this.$axios({
-        url: "http://127.0.0.1:3000/login",
+        url: "/login",
         method: "POST",
         data: this.form
       }).then(res => {
@@ -63,8 +63,8 @@ export default {
   }
 };
 </script>
-
-<style lang='less'>
+// scoped可以使样式不会污染
+<style lang='less' scoped>
 .container {
   padding: 20 / 360 * 100vw;
   .btn span {

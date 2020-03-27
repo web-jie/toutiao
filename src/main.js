@@ -5,7 +5,7 @@ import Vant from 'vant'
 import axios from 'axios'
 //绑定到原型上边，可以使用this.$axios来调用。
 Vue.prototype.$axios = axios;
-
+axios.defaults.baseURL = "http://localhost:3000"
 Vue.use(Vant);
 
 Vue.config.productionTip = false
