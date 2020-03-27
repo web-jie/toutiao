@@ -2,14 +2,15 @@
   <div class="container">
     <div class="header">
       <div class="avatar">
-        <img src="https://www.baidu.com/img/bd_logo1.png" alt />
+        <img :src="$axios.defaults.baseURL + userInfo.head_img" alt />
       </div>
       <div class="proile">
         <div>
-          <span class="iconfont iconxingbienan"></span>
-          火星网友
+          <span class="iconfont iconxingbienan" v-if="userInfo.gender === 1"></span>
+          <span class="iconfont iconxingbienv" v-if="userInfo.gender === 0"></span>
+          {{userInfo.nickname}}
         </div>
-        <p>2020-03-27</p>
+        <p>{{ moment(userInfo.create_date).format('YYYY-MM-DD') }}</p>
       </div>
       <span class="arrow iconfont iconjiantou1"></span>
     </div>
@@ -20,6 +21,8 @@
 <script>
 //@代表是src这个文件夹
 import Listbar from "@/components/Listbar.vue"
+// 引入第三方时间插件包
+import moment from "moment"
 export default {
   data(){
     return {
@@ -28,7 +31,10 @@ export default {
 				{ label: "我的跟帖", tips: "跟帖回复" },
 				{ label: "我的收藏", tips: "文章视频" },
 				{ label: "设置", tips: "" },
-      ]
+      ],
+      userInfo: {},
+
+      moment,
     }
   },
   components: {
@@ -44,6 +50,8 @@ export default {
       }
     }).then(res=>{
       console.log(res);
+      const {data} = res.data;
+      this.userInfo = data
     })
   }
 };
@@ -71,6 +79,10 @@ export default {
     line-height: 1.5;
     p {
       color: #999;
+    }
+    .iconxingbienan{
+      color: blue;
+      background: #fff;
     }
   }
 }
