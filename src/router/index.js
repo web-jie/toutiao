@@ -14,6 +14,7 @@ const routes = [
    component: ()=>import("@/views/Register")
  },
  {
+  //  导入个人中心路由
    path: '/personal',
    component: ()=>import("@/views/Personal")
  }
