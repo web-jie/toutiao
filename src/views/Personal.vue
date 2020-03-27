@@ -13,11 +13,28 @@
       </div>
       <span class="arrow iconfont iconjiantou1"></span>
     </div>
+  <Listbar v-for="(item,index) in rows" :key="index" :label="item.label" :tips="item.tips" />
   </div>
 </template>
 
 <script>
-export default {};
+//@代表是src这个文件夹
+import Listbar from "@/components/Listbar.vue"
+export default {
+  data(){
+    return {
+      rows:[
+        { label: "我的关注", tips: "关注的用户" },
+				{ label: "我的跟帖", tips: "跟帖回复" },
+				{ label: "我的收藏", tips: "文章视频" },
+				{ label: "设置", tips: "" },
+      ]
+    }
+  },
+  components: {
+    Listbar
+  }
+};
 </script>
 
 <style lang="less" scoped>
@@ -45,4 +62,5 @@ export default {};
     }
   }
 }
+
 </style>
