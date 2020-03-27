@@ -56,8 +56,11 @@ export default {
         method: "POST",
         data: this.form
       }).then(res => {
-        const { message } = res.data;
+        const { message,data } = res.data;
         this.$toast.success(message);
+        localStorage.setItem("userInfo",JSON.stringify(data));
+        //实现跳转
+        this.$router.push("/personal")
       });
     }
   }

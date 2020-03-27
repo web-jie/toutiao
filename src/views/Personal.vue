@@ -32,7 +32,19 @@ export default {
     }
   },
   components: {
-    Listbar
+    Listbar,
+  },
+  mounted(){
+    const jsonStr = localStorage.getItem("userInfo");
+    const userJson = JSON.parse(jsonStr);
+    this.$axios({
+      url: '/user/' + userJson.user.id,
+      headers: {
+        Authorization: userJson.token
+      }
+    }).then(res=>{
+      console.log(res);
+    })
   }
 };
 </script>
