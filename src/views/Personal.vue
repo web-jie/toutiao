@@ -1,5 +1,10 @@
 <template>
   <div class="container">
+    <div class="navigate-bar">
+      <span class="iconfont iconjiantou2" @click="$router.back()"></span>
+      <strong>个人中心</strong>
+      <span class="iconfont iconshouye" @click="$router.pash('/')"></span>
+    </div>
     <div class="header">
       <div class="avatar">
         <img :src="$axios.defaults.baseURL + userInfo.head_img" alt />
@@ -15,6 +20,7 @@
       <span class="arrow iconfont iconjiantou1"></span>
     </div>
   <Listbar v-for="(item,index) in rows" :key="index" :label="item.label" :tips="item.tips" />
+  <Listbar label="退出" @click.native="handleClick" />
   </div>
 </template>
 
@@ -30,11 +36,23 @@ export default {
         { label: "我的关注", tips: "关注的用户" },
 				{ label: "我的跟帖", tips: "跟帖回复" },
 				{ label: "我的收藏", tips: "文章视频" },
-				{ label: "设置", tips: "" },
       ],
       userInfo: {},
 
       moment,
+    }
+  },
+  methods: {
+    handleClick(){
+      this.$dialog.confirm({
+        title: '提示',
+        message: '确定退出吗？'
+      }).then(()=>{
+        localStorage.removeItem('userInfo');
+        this.$router.replace("/login");
+      }).catch(()=>{
+        //点击取消执行的代码
+      })
     }
   },
   components: {
@@ -58,6 +76,13 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.navigate-bar{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  line-height: 48 / 360 * 100vw;
+  padding: 0 20 / 360 * 100vw;
+}
 .header {
   padding: 20/360 * 100vw;
   display: flex;
