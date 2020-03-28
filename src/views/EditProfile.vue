@@ -24,7 +24,14 @@
       <van-field v-model="password" placeholder="请输入密码" type="password" />
     </van-dialog>
 
-    <Listbar label="性别" :tips="['女','男'][userInfo.gender]" />
+    <Listbar label="性别"
+     :tips="['女','男'][userInfo.gender]" 
+     @click.native="showgenner = true" />
+    <van-action-sheet 
+    v-model="showgenner"
+    close-on-click-action 
+    :actions="actions"
+    @select="onSelect" />
   </div>
 </template>
 
@@ -41,8 +48,13 @@ export default {
       userJson: {},
       showPassword: false,
       show: false,
+      showgenner: false,
       nickname: '',
       password: '',
+      actions: [
+        {name: '女', value: '0'},
+        {name: '男', value: '1'}
+      ]
     };
   },
   components: {
@@ -95,6 +107,14 @@ export default {
       this.handleEdit({
         password: this.password
       })
+      this.$router.replace('/login')
+    },
+    onSelect(item) {
+      // 默认情况下点击选项时不会自动收起
+      this.handleEdit({
+        gender: item.value
+      });
+      this.userInfo.gender = item.value
     }
   },
   mounted() {
