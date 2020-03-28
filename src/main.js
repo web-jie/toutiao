@@ -9,7 +9,18 @@ axios.defaults.baseURL = "http://localhost:3000"
 Vue.use(Vant);
 
 Vue.config.productionTip = false
-
+router.beforeEach((to,from,next) =>{
+  if(to.path === "/personal"){
+    const userJson = JSON.parse(localStorage.getItem('userInfo')) || {};
+    if(userJson.token){
+      next();
+    }else{
+      next("/login");
+    }
+  }else{
+    next();
+  }
+})
 
 new Vue({
   router,

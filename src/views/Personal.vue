@@ -5,7 +5,7 @@
       <strong>个人中心</strong>
       <span class="iconfont iconshouye" @click="$router.pash('/')"></span>
     </div>
-    <div class="header">
+    <div class="header" @click="toClick">
       <div class="avatar">
         <img :src="$axios.defaults.baseURL + userInfo.head_img" alt />
       </div>
@@ -53,6 +53,9 @@ export default {
       }).catch(()=>{
         //点击取消执行的代码
       })
+    },
+    toClick(){
+     this.$router.push('/edit-profile')
     }
   },
   components: {
