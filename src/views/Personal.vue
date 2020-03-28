@@ -1,7 +1,8 @@
 <template>
   <div class="container">
     <NavigateBar title="个人中心" :showHome="true"/>
-    <div class="header" @click="toClick">
+    <router-link to="/edit-profile">
+    <div class="header" >
       <div class="avatar">
         <img :src="$axios.defaults.baseURL + userInfo.head_img" alt />
       </div>
@@ -15,6 +16,7 @@
       </div>
       <span class="arrow iconfont iconjiantou1"></span>
     </div>
+    </router-link>
   <Listbar v-for="(item,index) in rows" :key="index" :label="item.label" :tips="item.tips" />
   <Listbar label="退出" @click.native="handleClick" />
   </div>
