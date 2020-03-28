@@ -1,10 +1,6 @@
 <template>
   <div class="container">
-    <div class="navigate-bar">
-      <span class="iconfont iconjiantou2" @click="$router.back()"></span>
-      <strong>个人中心</strong>
-      <span class="iconfont iconshouye" @click="$router.pash('/')"></span>
-    </div>
+    <NavigateBar title="个人中心" :showHome="true"/>
     <div class="header" @click="toClick">
       <div class="avatar">
         <img :src="$axios.defaults.baseURL + userInfo.head_img" alt />
@@ -27,6 +23,8 @@
 <script>
 //@代表是src这个文件夹
 import Listbar from "@/components/Listbar.vue"
+// 引入头部导航栏插件
+import NavigateBar from "@/components/NavigateBar.vue"
 // 引入第三方时间插件包
 import moment from "moment"
 export default {
@@ -60,6 +58,7 @@ export default {
   },
   components: {
     Listbar,
+    NavigateBar,
   },
   mounted(){
     const jsonStr = localStorage.getItem("userInfo");
@@ -79,13 +78,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.navigate-bar{
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  line-height: 48 / 360 * 100vw;
-  padding: 0 20 / 360 * 100vw;
-}
+
 .header {
   padding: 20/360 * 100vw;
   display: flex;
