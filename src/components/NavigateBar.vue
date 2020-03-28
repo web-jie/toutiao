@@ -21,5 +21,6 @@ export default {
   align-items: center;
   line-height: 48 / 360 * 100vw;
   padding: 0 20 / 360 * 100vw;
+  border-bottom: 1px #eee solid;
 }
 </style>
