@@ -5,8 +5,25 @@
       <img :src="$axios.defaults.baseURL + userInfo.head_img" />
       <van-uploader class="uploader" :after-read="afterRead" />
     </div>
-    <Listbar label="账号" :tips="userInfo.nickname" />
-    <Listbar label="密码" tips="******" />
+    <Listbar label="昵称" :tips="userInfo.nickname" @click.native="show = true" />
+    <!-- 点击账号弹出界面修改内容 -->
+    <!-- @confirm是点击确定按钮时候的事件 -->
+    <van-dialog v-model="show"
+     title="昵称修改"
+      show-cancel-button
+       @confirm="handleChangeNickname">
+      <van-field v-model="nickname"
+       placeholder="请输入昵称" />
+    </van-dialog>
+
+    <Listbar label="密码" tips="******" @click.native="showPassword = true" />
+    <van-dialog v-model="showPassword"
+     title="密码修改"
+      show-cancel-button
+       @confirm="handleChangePassword">
+      <van-field v-model="password" placeholder="请输入密码" type="password" />
+    </van-dialog>
+
     <Listbar label="性别" :tips="['女','男'][userInfo.gender]" />
   </div>
 </template>
@@ -21,7 +38,11 @@ export default {
     return {
       userInfo: {},
       //保存本地存储文件
-      userJson: {}
+      userJson: {},
+      showPassword: false,
+      show: false,
+      nickname: '',
+      password: '',
     };
   },
   components: {
@@ -42,7 +63,6 @@ export default {
         },
         data: formdata
       }).then(res => {
-
         const { url } = res.data.data;
         this.userInfo.head_img = url;
 
@@ -53,18 +73,29 @@ export default {
       });
     },
     //创建一个修改数据的函数，data传递的数据可以是对象
-  handleEdit(data) {
-    this.$axios({
-      url: "/user_update/" + this.userInfo.id,
-      method: "POST",
-      headers: {
-        Authorization: this.userJson.token
-      },
-      data
-    }).then(res => {
-      this.$toast.success("头像修改成功");
-    });
-  }
+    handleEdit(data) {
+      this.$axios({
+        url: "/user_update/" + this.userInfo.id,
+        method: "POST",
+        headers: {
+          Authorization: this.userJson.token
+        },
+        data
+      }).then(res => {
+        this.$toast.success("修改成功");
+      });
+    },
+    handleChangeNickname(){
+      this.handleEdit({
+        nickname: this.nickname
+      })
+      this.userInfo.nickname = this.nickname
+    },
+    handleChangePassword(){
+      this.handleEdit({
+        password: this.password
+      })
+    }
   },
   mounted() {
     const userJson = JSON.parse(localStorage.getItem("userInfo"));
@@ -77,11 +108,11 @@ export default {
       }
     }).then(res => {
       const { data } = res.data;
+      this.nickname = data.nickname;
+
       this.userInfo = data;
     });
-  },
-
-  
+  }
 };
 </script>
 
