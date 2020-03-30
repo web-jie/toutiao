@@ -22,6 +22,11 @@ const routes = [
   //  导入编辑页
   path: '/edit-profile',
   component: ()=>import("@/views/EditProfile")
+ },
+ {
+  //  导入我的关注页
+  path: '/follow',
+  component: ()=>import("@/views/Follow")
  }
 ]
 

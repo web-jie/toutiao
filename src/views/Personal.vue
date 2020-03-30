@@ -17,7 +17,11 @@
       <span class="arrow iconfont iconjiantou1"></span>
     </div>
     </router-link>
-  <Listbar v-for="(item,index) in rows" :key="index" :label="item.label" :tips="item.tips" />
+  <Listbar v-for="(item,index) in rows"
+  :key="index" 
+  :label="item.label" 
+  :tips="item.tips" 
+  :path="item.path" />
   <Listbar label="退出" @click.native="handleClick" />
   </div>
 </template>
@@ -33,9 +37,9 @@ export default {
   data(){
     return {
       rows:[
-        { label: "我的关注", tips: "关注的用户" },
-				{ label: "我的跟帖", tips: "跟帖回复" },
-				{ label: "我的收藏", tips: "文章视频" },
+        { label: "我的关注", tips: "关注的用户", path: "/follow" },
+				{ label: "我的跟帖", tips: "跟帖回复", path: "/comments" },
+				{ label: "我的收藏", tips: "文章视频", path: "/star" },
       ],
       userInfo: {},
 
@@ -106,6 +110,11 @@ export default {
     .iconxingbienan{
       color: blue;
       background: #fff;
+    }
+    .iconxingbienv{
+      color: pink;
+      background: #fff;
+
     }
   }
 }
