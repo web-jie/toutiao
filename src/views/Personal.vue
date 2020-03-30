@@ -75,7 +75,6 @@ export default {
         Authorization: userJson.token
       }
     }).then(res=>{
-      console.log(res);
       const {data} = res.data;
       this.userInfo = data
     })
