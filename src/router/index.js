@@ -5,34 +5,54 @@ import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
 const routes = [
- {
-   path: "/login",
-   component: ()=>import("@/views/Login")
- },
- {
-   path: '/register',
-   component: ()=>import("@/views/Register")
- },
- {
-  //  导入个人中心路由
-   path: '/personal',
-   component: ()=>import("@/views/Personal")
- },
- {
-  //  导入编辑页
-  path: '/edit-profile',
-  component: ()=>import("@/views/EditProfile")
- },
- {
-  //  导入我的关注页
-  path: '/follow',
-  component: ()=>import("@/views/Follow")
- },
- {
-  //  导入我的跟帖
-  path: '/comments',
-  component: ()=>import("@/views/Comments")
- }
+  {
+    path: "/login",
+    component: () => import("@/views/Login")
+  },
+  {
+    path: '/register',
+    component: () => import("@/views/Register")
+  },
+  {
+    //  导入个人中心路由
+    path: '/personal',
+    component: () => import("@/views/Personal"),
+    meta: {
+      Aguard: true
+    }
+  },
+  {
+    //  导入编辑页
+    path: '/edit-profile',
+    component: () => import("@/views/EditProfile"),
+    meta: {
+      Aguard: true
+    }
+  },
+  {
+    //  导入我的关注页
+    path: '/follow',
+    component: () => import("@/views/Follow"),
+    meta: {
+      Aguard: true
+    }
+  },
+  {
+    //  导入我的跟帖
+    path: '/comments',
+    component: () => import("@/views/Comments"),
+    meta: {
+      Aguard: true
+    }
+  },
+  {
+    //  导入我的收藏
+    path: '/star',
+    component: () => import("@/views/Star"),
+    meta: {
+      Aguard: true
+    }
+  }
 ]
 
 const router = new VueRouter({
