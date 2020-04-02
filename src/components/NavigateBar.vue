@@ -3,7 +3,7 @@
   <div class="navigate-bar">
     <span class="iconfont iconjiantou2" @click="$router.back()"></span>
     <strong>{{title}}</strong>
-    <span class="iconfont iconshouye" @click="$router.push('/login')" v-if="showHome"></span>
+    <span class="iconfont iconshouye" @click="$router.push('/')" v-if="showHome"></span>
     <span v-else class="iconfont iconshouye" style="opacity: 0"></span>
   </div>
 </template>
