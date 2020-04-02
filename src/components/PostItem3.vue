@@ -1,8 +1,8 @@
 <template>
   <div class="video">
-    <h4>林志玲穿透视黑纱裙米兰看秀腹部微隆显孕味</h4>
+    <h4>{{data.title}}</h4>
     <div class="cover">
-      <img src="https://www.baidu.com/img/bd_logo1.png" alt />
+      <img :src="$axios.defaults.baseURL + data.cover[0].url" alt />
       <!-- 图片中的播放文件 -->
       <div class="layer">
         <span class="iconfont iconshipin"></span>
@@ -12,7 +12,9 @@
 </template>
 
 <script>
-export default {};
+export default {
+  props: ['data']
+};
 </script>
 
 <style lang="less" scoped>

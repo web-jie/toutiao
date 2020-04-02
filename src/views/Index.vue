@@ -16,7 +16,12 @@
         <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
           <div v-for="(item, index) in list" :key="index">
             <!-- 只有单张图片的 -->
-            <PostItem1 />
+            <PostItem1 v-if="item.type === 1 &&
+            item.cover.length < 3 
+            &&
+             item.cover.length > 0 " :data="item" />
+              <PostItem2 v-if="item.type === 1 && item.cover.length > 3" :data="item"/>
+                 <PostItem3 v-if="item.type === 2" :data="item"/>
           </div>
         </van-list>
       </van-tab>
@@ -47,7 +52,7 @@ export default {
       //   "∨"
       // ],
       categories: [],
-      list: [1, 1, 1, 1, 1, 1],
+      list: [],
       active: 0,
       loading: false,
       finished: false
@@ -80,9 +85,20 @@ export default {
         this.getCategories();
         return;
       }
+      this.categories = categories
     } else {
       this.getCategories(token);
     }
+    this.$axios({
+      url: '/post',
+      params: {
+        category: 999
+      }
+    }).then(res=>{
+      const {data} = res.data
+      this.list = data
+    })
+
   },
   methods: {
     getCategories(token) {
@@ -94,7 +110,6 @@ export default {
       }
 
       this.$axios(config).then(res => {
-        console.log(res);
         const { data } = res.data;
         data.push({
           name: "∨"
@@ -105,7 +120,6 @@ export default {
       });
     },
     onLoad() {
-      console.log("已经拖动到了底部");
       // 异步更新数据
       // setTimeout 仅做示例，真实场景中一般为 ajax 请求
       setTimeout(() => {
