@@ -11,19 +11,30 @@
         <span class="iconfont iconwode"></span>
       </router-link>
     </div>
-    <van-tabs v-model="active" sticky swipeable>
+    <van-tabs v-model="active" sticky swipeable @scroll="handelScroll">
       <van-tab v-for="(item,index) in categories" :title="item.name" :key="index">
-        <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
-          <div v-for="(item, index) in list" :key="index">
-            <!-- 只有单张图片的 -->
-            <PostItem1 v-if="item.type === 1 &&
-            item.cover.length < 3 
-            &&
-             item.cover.length > 0 " :data="item" />
-              <PostItem2 v-if="item.type === 1 && item.cover.length > 3" :data="item"/>
-                 <PostItem3 v-if="item.type === 2" :data="item"/>
-          </div>
-        </van-list>
+        <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
+          <!-- immediate-check 这个属性可以阻止list组件默认就加载一次 -->
+          <van-list
+            immediate-check
+            v-model="item.loading"
+            :finished="item.finished"
+            finished-text="我也是有底线的"
+            @load="onLoad"
+          >
+            <div v-for="(subItem, subIndex) in item.list" :key="subIndex">
+              <!-- 只有单张图片的 -->
+              <PostItem1
+                v-if="subItem.type === 1 &&
+            subItem.cover.length < 3 &&
+             subItem.cover.length > 0 "
+                :data="subItem"
+              />
+              <PostItem2 v-if="subItem.type === 1 && subItem.cover.length >= 3" :data="subItem" />
+              <PostItem3 v-if="subItem.type === 2" :data="subItem" />
+            </div>
+          </van-list>
+        </van-pull-refresh>
       </van-tab>
     </van-tabs>
   </div>
@@ -36,33 +47,31 @@ import PostItem3 from "@/components/PostItem3";
 export default {
   data() {
     return {
-      // categories: [
-      //   "关注",
-      //   "娱乐",
-      //   "体育",
-      //   "汽车",
-      //   "房产",
-      //   "关注",
-      //   "关注",
-      //   "娱乐",
-      //   "体育",
-      //   "汽车",
-      //   "房产",
-      //   "关注",
-      //   "∨"
-      // ],
+      // 菜单的数据
       categories: [],
-      list: [],
+      // 记录当前tab栏的索引
       active: 0,
-      loading: false,
-      finished: false
+      // 是否在下拉加载
+      refreshing: false,
+      // list: [],
+      token: ""
+      // loading: false, // 是否正在加载中
+      // finished: false, // 是否已经加载完毕
     };
   },
+  // 监听属性
   watch: {
+    // 监听tab栏的切换
     active() {
       if (this.active === this.categories.length - 1) {
         this.$router.push("/栏目管理");
+        return;
       }
+      //请求不同栏目的数据
+      this.getList();
+      setTimeout(()=>{
+        window.scrollTo(0,this.categories[this.active].scrollY);
+      }, 0)
     }
   },
   components: {
@@ -71,68 +80,103 @@ export default {
     PostItem3
   },
   mounted() {
-    //获取本地存储中是否有数据
     const categories = JSON.parse(localStorage.getItem("categories"));
-    // 获取当前是否登录
     const { token } = JSON.parse(localStorage.getItem("userInfo")) || {};
-
+    this.token = token;
     if (categories) {
-      if (categories[0] !== "关注" && token) {
-        this.getCategories(token);
-        return;
-      }
-      if (categories[0] === "关注" && !token) {
+      if (
+        (token && categories[0].name !== "关注") ||
+        (!token && categories[0].name === "关注")
+      ) {
+        // 当token值没有数据或有数据，但是第一个不是‘关注’的话，就重新请求数据
         this.getCategories();
-        return;
+      } else {
+        this.categories = categories;
+        this.handleCategories();
       }
-      this.categories = categories
     } else {
-      this.getCategories(token);
+      this.getCategories();
     }
-    this.$axios({
-      url: '/post',
-      params: {
-        category: 999
-      }
-    }).then(res=>{
-      const {data} = res.data
-      this.list = data
-    })
-
+    this.getList();
   },
   methods: {
-    getCategories(token) {
+    handleCategories() {
+      this.categories = this.categories.map(v => {
+        v.pageIndex = 1; //给每个栏目都添加了一个pageIndex属性
+        v.list = []; //给每个栏目都拥有自己的文章列表
+        v.loading = false;
+        v.finished = false;
+        v.scrollY = 0
+        return v;
+      });
+    },
+    getCategories() {
       const config = {
-        url: "/category",
+        url: "/category"
       };
-      if (token) {
-        config.headers = {Authorization: token}
+      if (this.token) {
+        config.headers = { Authorization: this.token };
       }
-
       this.$axios(config).then(res => {
         const { data } = res.data;
         data.push({
           name: "∨"
         });
         this.categories = data;
-        // 把数据写入本地存储中
         localStorage.setItem("categories", JSON.stringify(data));
+        this.handleCategories();
+      });
+    },
+    getList() {
+      const { pageIndex, id, name, finished } = this.categories[this.active];
+      if (finished) return;
+      const config = {
+        url: "/post",
+        params: {
+          pageIndex,
+          pageSize: 5,
+          category: id
+        }
+      };
+      if (name === "关注") {
+        config.headers = {
+          Authorization: this.token
+        };
+      }
+      // 加载下一页的数据
+      this.$axios(config).then(res => {
+        const { data, total } = res.data;
+        // 把文章数据合并在原来的文章列表中
+        this.categories[this.active].list = [
+          ...this.categories[this.active].list,
+          ...data
+        ];
+        this.categories = [...this.categories];
+
+        this.categories[this.active].loading = false;
+        // 判断是否最后一页
+
+        if (this.categories[this.active].list.length === total) {
+          this.categories[this.active].finished = true;
+        }
       });
     },
     onLoad() {
-      // 异步更新数据
-      // setTimeout 仅做示例，真实场景中一般为 ajax 请求
-      setTimeout(() => {
-        for (let i = 0; i < 10; i++) {
-          this.list.push(1);
-        }
-        // 加载状态结束
-        this.loading = false;
-        // 数据全部加载完成
-        if (this.list.length >= 40) {
-          this.finished = true;
-        }
-      }, 5000);
+      // 当前栏目下的pageIndex加1
+      this.categories[this.active].pageIndex += 1;
+      this.getList();
+    },
+    handelScroll(data) {
+      if(this.categories.length === 0)return;
+
+      // scrollTop是滚动条的距离
+      const { scrollTop } = data;
+      this.categories[this.active].scrollY = scrollTop
+    },
+    onRefresh() {
+      // 表示加载完毕
+      this.refreshing = false;
+      console.log("正在下拉刷新");
     }
   }
 };
