@@ -12,7 +12,13 @@
       </router-link>
     </div>
     <van-tabs v-model="active" sticky swipeable @scroll="handelScroll">
-      <van-tab v-for="(item,index) in categories" :title="item.name" :key="index">
+      <van-tab v-for="(item,index) in categories" 
+      :title="item.name" 
+      :key="index"
+      v-if="item.is_top === 1|| item.name === '∨'"
+      
+      >
+
         <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
           <!-- immediate-check 这个属性可以阻止list组件默认就加载一次 -->
           <van-list
@@ -63,15 +69,18 @@ export default {
   watch: {
     // 监听tab栏的切换
     active() {
-      if (this.active === this.categories.length - 1) {
-        this.$router.push("/栏目管理");
+      const arr = this.categories.filter(v=>{
+        return v.is_top || v.name ==="∨"
+      })
+      if (this.active === arr.length - 1) {
+        this.$router.push("/category");
         return;
       }
       //请求不同栏目的数据
       this.getList();
       setTimeout(()=>{
         window.scrollTo(0,this.categories[this.active].scrollY);
-      }, 0)
+      }, 20)
     }
   },
   components: {
@@ -107,6 +116,7 @@ export default {
         v.loading = false;
         v.finished = false;
         v.scrollY = 0
+        v.isload = false
         return v;
       });
     },
@@ -128,7 +138,14 @@ export default {
       });
     },
     getList() {
-      const { pageIndex, id, name, finished } = this.categories[this.active];
+      const { pageIndex, id, name, finished, isload } = this.categories[this.active];
+      if(isload) return;
+        this.categories[this.active].isload = true
+
+        this.categories[this.active].pageIndex += 1;
+
+
+
       if (finished) return;
       const config = {
         url: "/post",
@@ -159,11 +176,13 @@ export default {
         if (this.categories[this.active].list.length === total) {
           this.categories[this.active].finished = true;
         }
+        // 加载完毕设置成false
+        this.categories[this.active].isload = false
       });
     },
     onLoad() {
       // 当前栏目下的pageIndex加1
-      this.categories[this.active].pageIndex += 1;
+      // this.categories[this.active].pageIndex += 1;
       this.getList();
     },
     handelScroll(data) {

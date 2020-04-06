@@ -56,6 +56,11 @@ const routes = [
     meta: {
       Aguard: true
     }
+  },
+  {
+    //  导入栏目管理
+    path: '/category',
+    component: () => import("@/views/Category"),
   }
 ]
 
