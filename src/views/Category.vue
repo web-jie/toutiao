@@ -52,11 +52,11 @@ export default {
   destroyed() {
     this.categories = [
       ...this.arrUp,
-      ...arrDown,
-      this.categories[this.categories.length-1]
-    ]
+      ...this.arrDown,
+      this.categories[this.categories.length - 1]
+    ];
     const str = JSON.stringify(this.categories);
-    localStorage.setItem('categories', str)
+    localStorage.setItem("categories", str);
   },
   methods: {
     handDel(item, index) {
@@ -65,12 +65,12 @@ export default {
       item.is_top = 0;
       this.arrDown.push(item);
     },
-    handAdd(item,index){
-      this.arrDown.splice(index,1)
+    handAdd(item, index) {
+      this.arrDown.splice(index, 1);
 
       item.is_top = 1;
 
-      this.arrUp.push(item)
+      this.arrUp.push(item);
     }
   }
 };
