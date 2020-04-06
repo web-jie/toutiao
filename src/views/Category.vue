@@ -4,11 +4,13 @@
     <div class="content">
       <p>点击就删除</p>
       <div class="list">
-<span class="item" v-for="(item,index) in arrUp" :key="index" :class="['关注','头条'].includes(item.name) ? 'active': ''">{{item.name}}</span>
+<span class="item" v-for="(item,index) in arrUp" :key="index" :class="['关注','头条'].includes(item.name) ? 'active': ''"
+@click="handDel(item,index)">{{item.name}}</span>
       </div>
       <p>点击就填加</p>
       <div class="list" >
-        <span class="item" v-for="(item,index) in arrDown" :key="index" :class="['关注','头条'].includes(item.name) ? 'active': ''">{{item.name}}</span>
+        <span class="item" v-for="(item,index) in arrDown" :key="index" :class="['关注','头条'].includes(item.name) ? 'active': ''"
+        >{{item.name}}</span>
 
       </div>
     </div>
@@ -37,6 +39,14 @@ export default {
     this.arrDown = this.categories.filter(v=>{
       return v.is_top === 0;
     })
+  },
+  methods: {
+    handDel(item,index){
+      if(item === '关注'|| item === '头条') return;
+      this.arrUp.splice(index, 1);
+      item.is_top = 0;
+      this.arrDown.push(item);
+    }
   }
 };
 </script>
