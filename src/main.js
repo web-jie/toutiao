@@ -7,6 +7,8 @@ import axios from 'axios'
 Vue.prototype.$axios = axios;
 axios.defaults.baseURL = "http://localhost:3000"
 Vue.use(Vant);
+// 保存根实例
+let app;
 
 Vue.config.productionTip = false
 router.beforeEach((to, from, next) => {
@@ -26,16 +28,25 @@ axios.interceptors.response.use(response=>{
   console.log(response)
   return response;
 },error=>{
-  console.log(error.response)
   const {statusCode,message} = error.response.data;
   if(statusCode !== 400) return;
   Toast.fail(message)
-
+  // 这个拦截器就是防止未登录就去收藏或关注。
+  if(statusCode === 403){
+    Toast.fail(message)
+    // app.$router.push('/login')
+    app.$router.push({
+      path: "/login",
+      query: {
+        return_url: app.$router.path
+      }
+    })
+  }
   return Promise.reject(error.response.data)
 })
 
 
-new Vue({
+app = new Vue({
   router,
   render: h => h(App)
 }).$mount('#app')

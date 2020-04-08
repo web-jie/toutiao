@@ -60,7 +60,10 @@ export default {
         this.$toast.success(message);
         localStorage.setItem("userInfo",JSON.stringify(data));
         //实现跳转
-        this.$router.push("/personal")
+        // this.$router.push("/personal")
+        const {return_url} = this.$route.query;
+        // 有的话就跳转到这个路径,没有的话就跳转到个人中心。
+        this.$router.replace(return_url || "/personal")
       });
     }
   }

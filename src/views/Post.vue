@@ -7,7 +7,7 @@
           <span class="iconfont iconjiantou2" @click="$router.back()"></span>
           <span class="iconfont iconnew"></span>
         </div>
-        <span class="follow " :class="post.has_follow ? '':'active'">{{post.has_follow ? '已关注': '关注'}}</span>
+        <span class="follow " @click="handleFollow" :class="post.has_follow ? '':'active'">{{post.has_follow ? '已关注': '关注'}}</span>
       </div>
       <h2 class="title">{{post.title}}</h2>
       <p class="author">{{post.user.nickname}} {{moment(post.create_date).format(`YYYY-MM-DD hh:mm:ss`)}}</p>
@@ -66,6 +66,23 @@ export default {
       console.log(data)
       this.post = data
     })
+  },
+  methods: {
+    // 关注和取消关注
+    handleFollow(){
+      const {token } = JSON.parse(localStorage.getItem('userInfo')) || {}
+      this.$axios({
+        url: "/user_follows/" + this.post.user.id,
+        headers: {
+          Authorization: token
+        }
+      }).then(res=>{
+        // console.log(res)
+        // 关注之后修改关注状态
+        this.post.has_follow = true;
+        this.$toast.success("关注成功")
+      })
+    }
   }
 };
 </script>
