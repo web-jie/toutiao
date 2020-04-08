@@ -29,9 +29,12 @@ axios.interceptors.response.use(response=>{
   return response;
 },error=>{
   const {statusCode,message} = error.response.data;
-  if(statusCode !== 400) return;
-  Toast.fail(message)
+  if(statusCode === 400){
+    Toast.fail(message)
+  }
+
   // 这个拦截器就是防止未登录就去收藏或关注。
+  console.log(statusCode)
   if(statusCode === 403){
     Toast.fail(message)
     // app.$router.push('/login')
