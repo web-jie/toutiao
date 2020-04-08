@@ -47,6 +47,7 @@ import PostItem1 from "@/components/PostItem1";
 import PostItem2 from "@/components/PostItem2";
 import PostItem3 from "@/components/PostItem3";
 export default {
+  name: 'search',
   data() {
     return {
       value: "",
@@ -102,6 +103,20 @@ export default {
     handelDel() {
       this.history = [];
       localStorage.removeItem("history");
+    },
+        // 组件进入时候触发这个路由守卫
+    // to: 代表你即将要访问的页面
+    // from：代表你从哪里来
+    // next：必须要调用，next就类似于你nodejs的中间件，调用才会加载后面的内容
+    beforeRouteEnter(to,from,next){
+              // 通过 `vm` 访问组件实例, vm就是this
+              next(vm=>{
+                if(from.path === '/'){
+                  vm.showLayer = false
+                  // 清空关键字
+                  vm.value = ""
+                }
+              })
     }
   }
 };
