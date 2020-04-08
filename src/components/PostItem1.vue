@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <router-link :to="`/post/${data.id}`">
     <div class="imgText">
       <div class="imgText-left">
         <h4>{{data.title}}</h4>
@@ -7,7 +7,7 @@
       </div>
       <img :src="$axios.defaults.baseURL + data.cover[0].url" alt />
     </div>
-  </div>
+  </router-link>
 </template>
 
 <script>

@@ -66,6 +66,11 @@ const routes = [
     //  导入搜索页
     path: '/search',
     component: () => import("@/views/Search"),
+  },
+  {
+    //  导入栏目管理页
+    path: '/post/:id',
+    component: () => import("@/views/Post"),
   }
   
 ]

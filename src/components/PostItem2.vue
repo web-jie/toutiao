@@ -1,4 +1,6 @@
 <template>
+<routter-link :to="`/post/${data.id}`">
+
   <div class="imgList">
      <h4>{{data.title}}</h4>
      <div class="images">
@@ -6,6 +8,8 @@
      </div>
      <p>{{data.user.nickname}} {{data.comment_length}}跟帖</p>
   </div>
+    
+</routter-link>
 </template>
 
 <script>
