@@ -102,7 +102,7 @@ export default {
         this.$toast.success(this.post.has_follow ? "关注成功" : "取消关注");
       });
     },
-    // 取消关注
+    // 取消点赞或确定点赞
     handleLike() {
       this.$axios({
         url: "/post_like/" + this.post.id,
