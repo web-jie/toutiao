@@ -67,6 +67,7 @@ export default {
   },
   // 监听属性
   watch: {
+    name: 'index',
     // 监听tab栏的切换
     active() {
       const arr = this.categories.filter(v=>{

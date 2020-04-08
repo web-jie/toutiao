@@ -41,7 +41,7 @@
       <div class="footer">
         <div class="comment-input">发布评论</div>
         <div class="icons">
-          <sapn class="iconfont iconpinglun-"></sapn>
+          <span class="iconfont iconpinglun-"></span>
           <i>{{post.comment_length > 100 ? '99+' : post.comment_length }}</i>
         </div>
         <div class="icons" @click="handleStar">
