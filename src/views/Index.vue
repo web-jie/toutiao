@@ -196,7 +196,6 @@ export default {
     onRefresh() {
       // 表示加载完毕
       this.refreshing = false;
-      console.log("正在下拉刷新");
     }
   }
 };

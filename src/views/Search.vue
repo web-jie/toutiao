@@ -81,11 +81,9 @@ export default {
         this.showLayer = true;
         const { data } = res.data;
         this.list = data;
-              console.log(this.list)
       });
     },
     handleRecord(item) {
-      // console.log(item)+
       this.value = item;
       this.getlist();
     },

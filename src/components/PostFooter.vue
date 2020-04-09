@@ -29,7 +29,6 @@ export default {
           Authorization: this.token
         }
       }).then(res=>{
-        console.log(this.post)
         this.post.has_star = !this.post.has_star
 
         this.$toast.success(res.data.message)

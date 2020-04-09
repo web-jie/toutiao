@@ -25,7 +25,6 @@ router.beforeEach((to, from, next) => {
 })
 // 路由拦截器
 axios.interceptors.response.use(response=>{
-  console.log(response)
   return response;
 },error=>{
   const {statusCode,message} = error.response.data;
@@ -34,7 +33,6 @@ axios.interceptors.response.use(response=>{
   }
 
   // 这个拦截器就是防止未登录就去收藏或关注。
-  console.log(statusCode)
   if(statusCode === 403){
     Toast.fail(message)
     // app.$router.push('/login')

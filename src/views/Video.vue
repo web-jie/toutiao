@@ -72,7 +72,6 @@ export default {
     }
     this.$axios(config).then(res => {
       const { data } = res.data;
-      console.log(data);
       this.post = data;
     });
   },
@@ -92,7 +91,6 @@ export default {
           Authorization: this.token
         }
       }).then(res => {
-        // console.log(res)
         // 关注之后修改关注状态
         this.post.has_follow = !this.post.has_follow;
         this.$toast.success(this.post.has_follow ? "关注成功" : "取消关注");

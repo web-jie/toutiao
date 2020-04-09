@@ -47,7 +47,6 @@ export default {
         Authorization: tokens.token
       }
     }).then(res=>{
-      // console.log(res)
       const {data} = res.data
       this.starText = data
     })

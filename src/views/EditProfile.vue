@@ -63,7 +63,6 @@ export default {
   },
   methods: {
     afterRead(file) {
-      console.log(file);
       const formdata = new FormData();
       formdata.append("file", file.file);
 
