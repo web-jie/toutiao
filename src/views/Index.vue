@@ -109,6 +109,17 @@ export default {
     }
     this.getList();
   },
+  beforeRouteEnter(to, from,next){
+    // 如果是来自栏目栏的
+    if(from.path === '/category'){
+      // vm就是this
+      next(vm=>{
+        vm.active = 0
+      })
+    }else{
+      next()
+    }
+  },
   methods: {
     handleCategories() {
       this.categories = this.categories.map(v => {

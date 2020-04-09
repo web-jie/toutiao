@@ -24,9 +24,9 @@ export default {
     handleStar() {
       const {token} = JSON.parse(localStorage.getItem('userInfo'))||{} 
       this.$axios({
-        url: "/post_star/" + this.post.has_star,
+        url: "/post_star/" + this.post.id,
         headers: {
-          Authorization: this.token
+          Authorization: token
         }
       }).then(res=>{
         this.post.has_star = !this.post.has_star
