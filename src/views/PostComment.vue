@@ -6,11 +6,13 @@
     <!-- v-model：是否正在加载中
     finished：数据是否加载完成
     @load：滚动到底部时候触发的事件-->
-    <van-list v-model="loading" 
-    :finished="finished" 
-    finished-text="已经到底了" 
-    :immediate-check="false"
-    @load="onLoad">
+    <van-list
+      v-model="loading"
+      :finished="finished"
+      finished-text="已经到底了"
+      :immediate-check="false"
+      @load="onLoad"
+    >
       <!-- 跟帖评论列表 -->
       <div class="comment" v-for="(item,index) in list" :key="index">
         <div class="comment-top">
@@ -54,7 +56,10 @@ export default {
       loading: false,
       // 是否加载完毕
       finished: false,
-
+      // 请求页数
+      pageIndex: 1,
+      // 请求条数
+      pageSize: 5
     };
   },
   components: {
@@ -71,14 +76,28 @@ export default {
     // 请求评论数据
     getList() {
       this.$axios({
-        url: `/post_comment/${this.pid}`
+        url: `/post_comment/${this.pid}`,
+        params: {
+          pageIndex: this.pageIndex,
+          pageSize: this.pageSize
+        }
       }).then(res => {
         const { data } = res.data;
-        this.list = data;
+        // this.list = data;
+        this.list = [...this.list, ...data];
+        // 请求完毕后，页数加一。
+        this.pageIndex += 1
+        // 并初始化 相关的值
+        this.loading = false
+        // 数据加载完毕
+        if(data.length < this.pageSize){
+          this.finished = true
+        }
       });
     },
-    onLoad(){
-      console.log(123)
+    onLoad() {
+      // console.log(123);
+      this.getList()
     }
   }
 };
