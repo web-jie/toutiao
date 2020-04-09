@@ -4,79 +4,68 @@
     <NavigateBar title="精彩跟帖" />
 
     <!-- 跟帖评论列表 -->
-    <div class="comment">
+    <div class="comment" v-for="(item,index) in list" :key="index" >
       <div class="comment-top">
         <div class="user">
           <img
-            src="https://img12.360buyimg.com/img/s100x100_jfs/t2770/142/2313361897/493911/1e5ea1db/575fd5f7N1cfc4411.jpg!cc_100x100.webp"
+            :src="$axios.defaults.baseURL + item.user.head_img"
             alt
           />
           <div class="user-info">
-            <p>火星网友</p>
-            <span>2小时前</span>
+            <p>{{item.user.nickname}}</p>
+            <span>{{moment(item.create_date).fromNow()}}</span>
           </div>
         </div>
         <span class="reply">回复</span>
       </div>
       <!-- 回复楼层 -->
-                  <div class="comment-floor">
-                <div class="floor-top">
-                    <div class="user">
-                        <!-- <span>1</span> -->
-                        <em>火星网友</em>
-                        <span>2小时前</span>
-                    </div>
-                    <span class="reply">回复</span>
-                </div>
-                <div class="content">
-                    文章评论的回复
-                </div>
+              
+               <CommentFloor :data="item.parent" />
 
-                <!-- 第二级 -->
-                <div class="comment-floor">
-                    <div class="floor-top">
-                        <div class="user">
-                            <!-- <span>2</span> -->
-                            <em>火星网友</em>
-                            <span>2小时前</span>
-                        </div>
-                        <span class="reply">回复</span>
-                    </div>
-                    <div class="content">
-                        文章评论的回复
-                    </div>
-
-                    <!-- 第3级 -->
-                    <div class="comment-floor">
-                        <div class="floor-top">
-                            <div class="user">
-                                <!-- <span>3</span> -->
-                                <em>火星网友</em>
-                                <span>2小时前</span>
-                            </div>
-                            <span class="reply">回复</span>
-                        </div>
-                        <div class="content">
-                            文章评论的回复
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-      <div class="content">文章说的很有道理！</div>
+      <div class="content">{{item.content}}</div>
     </div>
   </div>
 </template>
 
 <script>
+// 引入头部导航栏
 import NavigateBar from '@/components/NavigateBar'
+// 引入评论楼层插件
+import CommentFloor from '@/components/CommentFloor'
+// 插入时间插件
+import moment from 'moment'
+// 改变时间插件的文字
+moment.locale('zh-CN')
 export default {
   data() {
     return {
+      // 文章id
+      pid: '',
+      // 评论列表
+      list: [],
+      moment,
     };
   },
   components: {
-    NavigateBar
+    NavigateBar,
+    CommentFloor
+  },
+  mounted(){
+    const {id} = this.$route.params;
+    // 保存id
+    this.pid = id;
+    this.getList()
+  },
+  methods: {
+    // 请求评论数据
+    getList(){
+      this.$axios({
+        url: `/post_comment/${this.pid}`
+      }).then(res => {
+        const {data} = res.data
+        this.list = data
+      })
+    }
   }
 };
 </script>
@@ -106,29 +95,6 @@ export default {
   .content{
     padding: 15/360*100vw 0;
   }
-  .comment-floor{
-    padding: 0 2/360*100vw;
-    // border: 1px solid #000;
-    background: #e9e9e9;
-    .floor-top{
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-top: 10/360*100vw;
-      .user{
-        padding-left: 10/360*100vw;
-        span{
-          color: #999;
-          padding-left: 14/360*100vw;
-        }
-      }
-      .reply{
-        padding-right: 10/360*100vw;
-      }
-    }
-    .content{
-      padding-left: 10/360*100vw;
-    }
-  }
+  
 }
 </style>
