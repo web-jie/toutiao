@@ -1,7 +1,7 @@
 <template>
   <div class="comment-floor">
     <!-- 自己调用自己 -->
-
+    <commentFloor v-if="data.parent" :data="data.parent" />
     <div class="floor-top">
       <div class="user">
         <!-- <span>1</span> -->
