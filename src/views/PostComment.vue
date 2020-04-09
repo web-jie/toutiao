@@ -20,7 +20,7 @@
       </div>
       <!-- 回复楼层 -->
               
-               <CommentFloor :data="item.parent" />
+               <CommentFloor v-if="item.parent" :data="item.parent" />
 
       <div class="content">{{item.content}}</div>
     </div>
