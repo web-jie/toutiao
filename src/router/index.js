@@ -76,6 +76,11 @@ const routes = [
     //  导入视频详情页
     path: '/video/:id',
     component: () => import("@/views/Video"),
+  },
+  {
+    //  文章的跟帖列表详情页
+    path: '/post-comment/:id',
+    component: () => import("@/views/PostComment"),
   }
   
 ]
