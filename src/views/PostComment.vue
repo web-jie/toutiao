@@ -27,7 +27,7 @@
         </div>
         <!-- 回复楼层 -->
 
-        <CommentFloor v-if="item.parent" :data="item.parent" />
+        <CommentFloor v-if="item.parent" :data="item.parent" @reply="handleReply" />
 
         <div class="content">{{item.content}}</div>
       </div>

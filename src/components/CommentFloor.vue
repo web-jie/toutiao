@@ -29,6 +29,7 @@ export default {
   methods: {
     // 组件内部的回复的事件
     handleReply(data) {
+      console.log(1111)
       // 触发父组件传递过来的reply函数
       this.$emit("reply", data);
     }
