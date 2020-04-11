@@ -12,13 +12,12 @@
       </router-link>
     </div>
     <van-tabs v-model="active" sticky swipeable @scroll="handelScroll">
-      <van-tab v-for="(item,index) in categories" 
-      :title="item.name" 
-      :key="index"
-      v-if="item.is_top === 1|| item.name === '∨'"
-      
+      <van-tab
+        v-for="(item,index) in categories"
+        :title="item.name"
+        :key="index"
+        v-if="item.is_top === 1|| item.name === '∨'"
       >
-
         <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
           <!-- immediate-check 这个属性可以阻止list组件默认就加载一次 -->
           <van-list
@@ -67,21 +66,21 @@ export default {
   },
   // 监听属性
   watch: {
-    name: 'index',
+    name: "index",
     // 监听tab栏的切换
     active() {
-      const arr = this.categories.filter(v=>{
-        return v.is_top || v.name ==="∨"
-      })
+      const arr = this.categories.filter(v => {
+        return v.is_top || v.name === "∨";
+      });
       if (this.active === arr.length - 1) {
         this.$router.push("/category");
         return;
       }
       //请求不同栏目的数据
       this.getList();
-      setTimeout(()=>{
-        window.scrollTo(0,this.categories[this.active].scrollY);
-      }, 20)
+      setTimeout(() => {
+        window.scrollTo(0, this.categories[this.active].scrollY);
+      }, 20);
     }
   },
   components: {
@@ -90,45 +89,51 @@ export default {
     PostItem3
   },
   mounted() {
-    const categories = JSON.parse(localStorage.getItem("categories"));
-    const { token } = JSON.parse(localStorage.getItem("userInfo")) || {};
-    this.token = token;
-    if (categories) {
-      if (
-        (token && categories[0].name !== "关注") ||
-        (!token && categories[0].name === "关注")
-      ) {
-        // 当token值没有数据或有数据，但是第一个不是‘关注’的话，就重新请求数据
-        this.getCategories();
-      } else {
-        this.categories = categories;
-        this.handleCategories();
-      }
-    } else {
-      this.getCategories();
-    }
-    this.getList();
+    this.reload();
+
+    // this.getList();
   },
-  beforeRouteEnter(to, from,next){
+  beforeRouteEnter(to, from, next) {
     // 如果是来自栏目栏的
-    if(from.path === '/category'){
+    if (from.path === "/category") {
       // vm就是this
-      next(vm=>{
-        vm.active = 0
-      })
-    }else{
-      next()
+      next(vm => {
+        vm.active = 0;
+        // 如果是从栏目管理回来的，避免栏目管理的数据有更新，所以重新的初始化页面
+        vm.reload();
+      });
+    } else {
+      next();
     }
   },
   methods: {
+    reload() {
+      const categories = JSON.parse(localStorage.getItem("categories"));
+      const { token } = JSON.parse(localStorage.getItem("userInfo")) || {};
+      this.token = token;
+      if (categories) {
+        if (
+          (token && categories[0].name !== "关注") ||
+          (!token && categories[0].name === "关注")
+        ) {
+          // 当token值没有数据或有数据，但是第一个不是‘关注’的话，就重新请求数据
+          this.getCategories();
+        } else {
+          this.categories = categories;
+          this.handleCategories();
+        }
+      } else {
+        this.getCategories();
+      }
+    },
     handleCategories() {
       this.categories = this.categories.map(v => {
         v.pageIndex = 1; //给每个栏目都添加了一个pageIndex属性
         v.list = []; //给每个栏目都拥有自己的文章列表
         v.loading = false;
         v.finished = false;
-        v.scrollY = 0
-        v.isload = false
+        v.scrollY = 0;
+        v.isload = false;
         return v;
       });
     },
@@ -150,13 +155,13 @@ export default {
       });
     },
     getList() {
-      const { pageIndex, id, name, finished, isload } = this.categories[this.active];
-      if(isload) return;
-        this.categories[this.active].isload = true
+      const { pageIndex, id, name, finished, isload } = this.categories[
+        this.active
+      ];
+      if (isload) return;
+      this.categories[this.active].isload = true;
 
-        this.categories[this.active].pageIndex += 1;
-
-
+      this.categories[this.active].pageIndex += 1;
 
       if (finished) return;
       const config = {
@@ -189,7 +194,7 @@ export default {
           this.categories[this.active].finished = true;
         }
         // 加载完毕设置成false
-        this.categories[this.active].isload = false
+        this.categories[this.active].isload = false;
       });
     },
     onLoad() {
@@ -198,11 +203,11 @@ export default {
       this.getList();
     },
     handelScroll(data) {
-      if(this.categories.length === 0)return;
+      if (this.categories.length === 0) return;
 
       // scrollTop是滚动条的距离
       const { scrollTop } = data;
-      this.categories[this.active].scrollY = scrollTop
+      this.categories[this.active].scrollY = scrollTop;
     },
     onRefresh() {
       // 表示加载完毕
