@@ -23,7 +23,7 @@
               <span>{{moment(item.create_date).fromNow()}}</span>
             </div>
           </div>
-          <span class="reply">回复</span>
+          <span class="reply" @click="handleReply(item)">回复</span>
         </div>
         <!-- 回复楼层 -->
 
@@ -39,11 +39,16 @@
       <van-field
         v-model="message"
         :rows="rows"
-        autosize
+        :autosize="!isFocus"
         type="textarea"
         placeholder="说点什么..."
         class="textarea"
+        :class="isFocus ? `ative` : ``"
+        @focus="handleFocus"
+        @blur="handleBlur"
+        @keyup.enter="handleSubmit"
       />
+      <span class="submit" v-show="isFocus" @click="handleSubmit">发布</span>
     </div>
   </div>
 </template>
@@ -74,7 +79,11 @@ export default {
       // 请求条数
       pageSize: 5,
       message: "",
-      rows: 1
+      rows: 1,
+      // 几率当前的输入框是否获得焦点
+      isFocus: false,
+      // 回复评论的对象
+      reply: {}
     };
   },
   components: {
@@ -113,6 +122,55 @@ export default {
     onLoad() {
       // console.log(123);
       this.getList();
+    },
+    // 评论输入框获得焦点时候触发的事件
+    handleFocus() {
+      // 修改评论输入框的高度
+      this.isFocus = true;
+    },
+    // 评论输入框失去焦点时候触发
+    handleBlur() {
+      setTimeout(() => {
+        this.isFocus = false;
+      }, 100);
+    },
+    handleSubmit() {
+      console.log(111);
+      // 内容不能为空
+      if (this.message.trim() == "") {
+        return;
+      }
+      // 如果能看到发布就是代表用户是登录状态
+      const { token } = JSON.parse(localStorage.getItem("userInfo")) || {};
+      // 发布评论请求
+      this.$axios({
+        url: "/post_comment/" + this.pid,
+        method: "POST",
+        headers: {
+          Authorization: token
+        },
+        data: {
+          content: this.message
+        }
+      }).then(res => {
+        this.message = "";
+        this.$toast.success("评论成功");
+        this.list = []; //必须要清空，否则它保存的是之前的评论
+        this.pageIndex = 1;
+        this.getList();
+      });
+    },
+    // 点击回复按钮触发的事件
+    handleReply(item) {
+      // 因为点击时候失去焦点，已经触发了handleBlur事件
+      setTimeout(() => {
+        // 记录下来当前回复的评论信息,就是我们的评论在回复item
+        this.reply = item;
+        // 弹起输入框
+        this.isFocus = true;
+        // 输入框获得焦点
+        this.$refs.textarea.focus();
+      }, 200);
     }
   }
 };
@@ -147,20 +205,36 @@ export default {
   .content {
     padding: 15/360 * 100vw 0;
   }
-
 }
-.publish{
-    position: fixed;
-    width: 100%;
-    left:0;
-    bottom:0;
-    padding: 5/360*100vw 15/360*100vw;
-    box-sizing: border-box;
-    background: #fff;
-    .textarea{
-        background: #eee;
-        border-radius: 50px;
-        padding: 5px 20px;
-    }
+.publish {
+  position: fixed;
+  width: 100%;
+  left: 0;
+  bottom: 0;
+  padding: 5/360 * 100vw 15/360 * 100vw;
+  box-sizing: border-box;
+  background: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  .textarea {
+    background: #eee;
+    border-radius: 50px;
+    padding: 5px 20px;
+    padding: 5px 15px;
+  }
+  .ative {
+    height: 82px !important;
+    border-radius: 8px;
+  }
+  .submit {
+    margin-left: 5px;
+    padding: 3px 10px;
+    color: #fff;
+    background: red;
+    border-radius: 50px;
+    font-size: 12px;
+    flex-shrink: 0;
+  }
 }
 </style>
