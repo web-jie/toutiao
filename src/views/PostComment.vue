@@ -41,12 +41,13 @@
         :rows="rows"
         :autosize="!isFocus"
         type="textarea"
-        placeholder="说点什么..."
+        :placeholder="reply.user ? `回复：@` + reply.user.nickname : `说点什么...`"
         class="textarea"
         :class="isFocus ? `ative` : ``"
         @focus="handleFocus"
         @blur="handleBlur"
         @keyup.enter="handleSubmit"
+        ref="textarea"
       />
       <span class="submit" v-show="isFocus" @click="handleSubmit">发布</span>
     </div>
@@ -132,6 +133,10 @@ export default {
     handleBlur() {
       setTimeout(() => {
         this.isFocus = false;
+        // 失去焦点时候如果输入框的值是空的，就把回复的人清空
+        if (this.message.trim() === "") {
+          this.reply = {};
+        }
       }, 100);
     },
     handleSubmit() {
@@ -142,6 +147,14 @@ export default {
       }
       // 如果能看到发布就是代表用户是登录状态
       const { token } = JSON.parse(localStorage.getItem("userInfo")) || {};
+      // 评论接口数据
+    const data = {
+      content: this.message
+    }
+    if(this.reply.id){
+      data.parent_id = this.reply.id
+    }
+
       // 发布评论请求
       this.$axios({
         url: "/post_comment/" + this.pid,
@@ -149,15 +162,14 @@ export default {
         headers: {
           Authorization: token
         },
-        data: {
-          content: this.message
-        }
+        data
       }).then(res => {
         this.message = "";
         this.$toast.success("评论成功");
         this.list = []; //必须要清空，否则它保存的是之前的评论
         this.pageIndex = 1;
         this.getList();
+        this.reply = {}
       });
     },
     // 点击回复按钮触发的事件
