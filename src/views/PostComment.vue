@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container">
     <!-- 头部导航组件 -->
     <NavigateBar title="精彩跟帖" />
 
@@ -32,6 +32,19 @@
         <div class="content">{{item.content}}</div>
       </div>
     </van-list>
+
+    <!-- 发布评论的底部 -->
+    <div class="publish">
+      <!-- 输入框，点击和没点击时候显示的效果是不一样的 -->
+      <van-field
+        v-model="message"
+        :rows="rows"
+        autosize
+        type="textarea"
+        placeholder="说点什么..."
+        class="textarea"
+      />
+    </div>
   </div>
 </template>
 
@@ -59,7 +72,9 @@ export default {
       // 请求页数
       pageIndex: 1,
       // 请求条数
-      pageSize: 5
+      pageSize: 5,
+      message: "",
+      rows: 1
     };
   },
   components: {
@@ -86,24 +101,27 @@ export default {
         // this.list = data;
         this.list = [...this.list, ...data];
         // 请求完毕后，页数加一。
-        this.pageIndex += 1
+        this.pageIndex += 1;
         // 并初始化 相关的值
-        this.loading = false
+        this.loading = false;
         // 数据加载完毕
-        if(data.length < this.pageSize){
-          this.finished = true
+        if (data.length < this.pageSize) {
+          this.finished = true;
         }
       });
     },
     onLoad() {
       // console.log(123);
-      this.getList()
+      this.getList();
     }
   }
 };
 </script>
 
 <style lang="less" scoped>
+.container {
+  padding-bottom: 60/360 * 100vw;
+}
 .comment {
   padding: 0 20/360 * 100vw;
   border-bottom: 1px solid #999;
@@ -125,8 +143,24 @@ export default {
       }
     }
   }
+
   .content {
     padding: 15/360 * 100vw 0;
   }
+
+}
+.publish{
+    position: fixed;
+    width: 100%;
+    left:0;
+    bottom:0;
+    padding: 5/360*100vw 15/360*100vw;
+    box-sizing: border-box;
+    background: #fff;
+    .textarea{
+        background: #eee;
+        border-radius: 50px;
+        padding: 5px 20px;
+    }
 }
 </style>
