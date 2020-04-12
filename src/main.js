@@ -5,7 +5,8 @@ import Vant, {Toast} from 'vant'
 import axios from 'axios'
 //绑定到原型上边，可以使用this.$axios来调用。
 Vue.prototype.$axios = axios;
-axios.defaults.baseURL = "http://localhost:3000"
+// axios.defaults.baseURL = "http://localhost:3000"
+axios.defaults.baseURL = "http://hmtoutiao-api.atlansic.com"
 Vue.use(Vant);
 // 保存根实例
 let app;
